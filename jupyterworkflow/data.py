@@ -8,7 +8,13 @@ def get_freemont_data(filename = 'Freemont.csv', url = FREEMONT_URL, force_downl
     if force_download or not os.path.exists(filename):
         urllib.request.urlretrieve(url, filename)
         
-    data = pandas.read_csv('Freemont.csv', index_col = 'Date', parse_dates = True)
+    data = pandas.read_csv(filename, index_col = 'Date')
+        
+    try:
+        data.index = pandas.to_datetime(data.index, format='%m/%d/%Y %H:%M:%S %p')
+    except TypeError:
+        data.index = pandas.to_datetime(data.index)
+        
     data.columns = ['Total', 'East', 'West']
     
     return(data)
